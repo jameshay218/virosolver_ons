@@ -28,7 +28,8 @@ main_wd <- paste0(HOME_WD,"/virosolver_ons")
 setwd(main_wd)
 
 ## What to call this run
-run_name <- paste0("sim_",task_id)
+task_id <- 1
+run_name <- paste0("simtest_",task_id)
 
 ## Where to save the simulated data
 save_wd <- paste0(HOME_WD, "/virosolver_paper/data/ONS_sim/")
@@ -44,14 +45,13 @@ if(!file.exists(chainwd_exp)) dir.create(chainwd_exp,recursive = TRUE)
 if(!file.exists(plot_wd)) dir.create(plot_wd,recursive = TRUE)
 
 ## Arguments for this run
-set.seed(1234)
-task_id <- 1
+set.seed(1)
 
 ##################################################
 ## NOTE THIS - change flag to FALSE if want to include undetectable Cts
-use_pos <- TRUE
+use_pos <- FALSE
 n_samp <- 1000 ## How many posterior samples to use for plots etc
-rerun_exp <- TRUE
+rerun_exp <- FALSE
 rerun_gp <- TRUE
 
 ##################################################
@@ -81,11 +81,11 @@ names(pars) <- model_pars$names
 ## Simulation parameters
 population_n <- 1000000
 ## Over the course of 200 days
-times <- 0:200
+times <- 0:250
 
 ## Sampling procedure
 sampling_frequency <- 14
-sampling_number <- 3000
+sampling_number <- 2000
 
 ########################################
 ## IMPORTANT CHECK
@@ -114,25 +114,29 @@ p1/p2
 ########################################
 source("simulate_data.R")
 head(obs_dat)
+obs_dat <- obs_dat %>% filter(t < 150)
 ages <- 1:max(obs_dat$t)
 times <- 0:max(obs_dat$t)
 
 ########################################
 ## 4. Fit single cross sections to simulated data
 ########################################
-source("fit_exp_model.R")
-source("plots_exp_model.R")
-p_exp_betas
-ggsave("plots/exp_betas_example.png",p_exp_betas,width=8,height=5,units="in",dpi=300)
+#source("fit_exp_model.R")
+#source("plots_exp_model.R")
+#p_exp_betas
+#ggsave("plots/exp_betas_example.png",p_exp_betas,width=8,height=5,units="in",dpi=300)
 
 ########################################
 ## 5. Fit full Gaussian process model to simulated data
 ########################################
 source("fit_gp_model.R")
 source("plots_gp_model.R")
-p_dat
+p_dat1 <- p_dat + scale_x_continuous(limits=c(0,250))
 p_vl
 p_detect
 p_gr
 seir_dynamics$plot/p_inc
+
+(p_dat + scale_x_continuous(limits=c(0,250)))/p_inc
+
 ggsave("plots/gp_example.png",seir_dynamics$plot/p_inc,width=8,height=10,units="in",dpi=300)

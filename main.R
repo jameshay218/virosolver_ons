@@ -52,7 +52,7 @@ set.seed(1)
 use_pos <- FALSE
 n_samp <- 1000 ## How many posterior samples to use for plots etc
 rerun_exp <- FALSE
-rerun_gp <- TRUE
+rerun_gp <- FALSE
 
 ##################################################
 ## NOTE THIS BIT TO USE FOREACH LOOP
